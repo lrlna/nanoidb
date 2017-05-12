@@ -1,0 +1,24 @@
+{
+  "name": "offlinezzz",
+  "version": "1.0.0",
+  "description": "offline example yo",
+  "main": "index.js",
+  "scripts": {
+    "start": "bankai start",
+    "test": "standard"
+  },
+  "keywords": [
+    "offline",
+    "example"
+  ],
+  "author": "Irina Shestak",
+  "license": "MIT",
+  "dependencies": {
+    "choo": "^5.4.0",
+    "choo-log": "^6.1.2",
+    "nanobus": "^3.2.1"
+  },
+  "devDependencies": {
+    "bankai": "^7.6.1"
+  }
+}
