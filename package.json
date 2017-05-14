@@ -1,15 +1,15 @@
 {
-  "name": "offlinezzz",
+  "name": "nanoidb",
   "version": "1.0.0",
-  "description": "offline example yo",
+  "description": "fun wrapper around indexeddb",
   "main": "index.js",
   "scripts": {
     "start": "bankai start",
     "test": "standard"
   },
   "keywords": [
-    "offline",
-    "example"
+    "indexeddb",
+    "offline"
   ],
   "author": "Irina Shestak",
   "license": "MIT",

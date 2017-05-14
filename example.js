@@ -1,6 +1,6 @@
 var html = require('choo/html')
+var Nanoidb = require('./idb')
 var log = require('choo-log')
-var Nanodb = require('./idb')
 var choo = require('choo')
 
 var app = choo()
@@ -8,13 +8,13 @@ var app = choo()
 app.route('/', MainView)
 
 app.use(log())
-var db = Nanodb('butts', 1)
+var db = Nanoidb('butts', 1)
 db.on('upgrade', function (db) {
   db.createObjectStore('butts')
 })
 
 db.on('open', function (stores) {
-  stores.butts.put('butts', 'voluptuous', function (err) {
+  stores.butts.put('butts', 'cute', function (err) {
     if (err) throw err
     console.log('put done')
 
@@ -27,8 +27,8 @@ db.on('open', function (stores) {
         console.log('deleted')
 
         stores.butts.batch()
-          .put('cool_thang', 'hell yea')
-          .put('dang', 'hell yea')
+          .put('coolThang', 'hell yea')
+          .put('dang', 'no wayyy')
           .put('ding', 'whoaaa yea')
           .del('ding')
           .flush(function (err) {
