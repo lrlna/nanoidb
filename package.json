@@ -11,14 +11,15 @@
     "indexeddb",
     "offline"
   ],
+  "repository": "lrlna/nanoidb",
   "author": "Irina Shestak",
   "license": "MIT",
   "dependencies": {
-    "choo": "^5.4.0",
-    "choo-log": "^6.1.2",
     "nanobus": "^3.2.1"
   },
   "devDependencies": {
-    "bankai": "^7.6.1"
+    "bankai": "^7.6.1",
+    "choo": "^5.4.0",
+    "choo-log": "^6.1.2"
   }
 }
