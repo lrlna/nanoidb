@@ -50,9 +50,10 @@ db.on('open', function (stores) {
 This creates an instance of IndexedDB. It takes in a database `name` and
 `version`. IndexedDB's versioning starts with 1, rather than 0. 
 
-### `db.on('upgrade', callback(indexedDB))`
-Returns an instance of the previously created indexedDB. This is where you
-should create your object store by calling `db.createObjectStore('<name>')`.
+### `db.on('upgrade', callback({ indexedDB, versionChangeEvent }))`
+Returns an instance of the previously created indexedDB and a
+IDBVersionChangeEvent. This is where you should create your object store by
+calling `db.createObjectStore('<name>')`.
 
 ### `db.on('open', callback(stores))`
 Returns an instance of an object store that you can later use.

@@ -33,7 +33,10 @@ function Nanoidb (name, version) {
   }
 
   db.onupgradeneeded = function (event) {
-    self.emit('upgrade', db.result)
+    self.emit('upgrade', {
+      db: db.result,
+      event: event
+    })
   }
 }
 
