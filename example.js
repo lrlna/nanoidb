@@ -1,6 +1,6 @@
 var html = require('choo/html')
-var Nanoidb = require('./idb')
 var log = require('choo-log')
+var Nanoidb = require('./')
 var choo = require('choo')
 
 var app = choo()
@@ -45,7 +45,7 @@ app.mount('body')
 function MainView () {
   return html`
     <body>
-      <div> harrrroooo yosh </div>
+      <div> harrrroooo </div>
     </body>
   `
 }
