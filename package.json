@@ -20,6 +20,7 @@
   "devDependencies": {
     "bankai": "^7.6.1",
     "choo": "^5.4.0",
-    "choo-log": "^6.1.2"
+    "choo-log": "^6.1.2",
+    "standard": "^10.0.2"
   }
 }
