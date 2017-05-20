@@ -9,8 +9,8 @@ app.route('/', MainView)
 
 app.use(log())
 var db = Nanoidb('butts', 1)
-db.on('upgrade', function (db) {
-  db.createObjectStore('butts')
+db.on('upgrade', function (upgradeData) {
+  upgradeData.db.createObjectStore('butts')
 })
 
 db.on('open', function (stores) {
