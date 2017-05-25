@@ -13,35 +13,48 @@ essentially a set of database tables, but in an indexedDB context.
 # Usage
 ```js
 var db = Nanoidb('butts', 1)
-db.on('upgrade', function (upgradeData) {
-  upgradeData.db.createObjectStore('butts')
+db.on('upgrade', function (diffData) {
+  diffData.db.createObjectStore('butts')
 })
 
 db.on('open', function (stores) {
-  stores.butts.put('butts', 'cute', function (err) {
-    if (err) throw err
-    console.log('put done')
+  putOp(stores.butts)
 
-    stores.butts.get('butts', function (err, val) {
+  function putOp (store) {
+    stores.butts.put('butts', 'cute', function (err) {
+      if (err) throw err
+      console.log('put done')
+      getOp(stores.butts)
+    })
+  }
+
+  function getOp (store) {
+    store.get('butts', function (err, val) {
       if (err) throw err
       console.log('get value', val)
-
-      stores.butts.del('butts', function (err) {
-        if (err) throw err
-        console.log('deleted')
-
-        stores.butts.batch()
-          .put('coolThang', 'hell yea')
-          .put('dang', 'no wayyy')
-          .put('ding', 'whoaaa yea')
-          .del('ding')
-          .flush(function (err) {
-            if (err) throw err
-            console.log('it flushed successfully')
-          })
-      })
+      deleteOp(store)
     })
-  })
+  }
+
+  function deleteOp (store) {
+    store.del('butts', function (err) {
+      if (err) throw err
+      console.log('deleted')
+      batchOp(store)
+    })
+  }
+
+  function batchOp (store) {
+    store.batch()
+      .put('coolThang', 'hell yea')
+      .put('dang', 'no wayyy')
+      .put('ding', 'whoaaa yea')
+      .del('ding')
+      .flush(function (err) {
+        if (err) throw err
+        console.log('it flushed successfully')
+      })
+  }
 })
 ```
 
@@ -50,12 +63,12 @@ db.on('open', function (stores) {
 This creates an instance of IndexedDB. It takes in a database `name` and
 `version`. IndexedDB's versioning starts with 1, rather than 0. 
 
-### `db.on('upgrade', callback(upgradeData))`
-Returns an object composed of an instance of the previously created indexedDB
-and a IDBVersionChangeEvent. This is where you should create your object store
-by calling `upgradeData.db.createObjectStore('<name>')`.
+### `db.on('upgrade', callback(diffData))`
+Returns an object composed of a previously created indexedDB and a
+IDBVersionChangeEvent. This is where you should create your object store by
+calling `diffData.db.createObjectStore('<name>')`.
 
-`upgradeData.event` provides you with an `oldVersion` property to help with
+`diffData.event` provides you with an `oldVersion` property to help with
 schema updates.
 
 ### `db.on('open', callback(stores))`
