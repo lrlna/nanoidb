@@ -82,6 +82,26 @@ Store.prototype.get = function (key, cb) {
   }
 }
 
+Store.prototype.getAll = function (query, count, cb) {
+  var transaction = this.db.transaction(this.name, 'readonly')
+  var store = transaction.objectStore(this.name)
+
+  if (typeof query === 'function') {
+    var res = store.getAll()
+    cb = query
+  } else if (typeof query === 'string') {
+    res = store.getAll(query, count)
+  }
+
+  transaction.oncomplete = function (event) {
+    cb(null, res.result)
+  }
+
+  transaction.onerror = function () {
+    cb(transaction.error)
+  }
+}
+
 Store.prototype.del = function (key, cb) {
   assert.equal(typeof key, 'string', 'Nanoidb.Store.del: key should be type string')
   assert.equal(typeof cb, 'function', 'Nanoidb.Store.del: cb should be type function')

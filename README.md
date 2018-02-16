@@ -12,24 +12,34 @@ essentially a set of database tables, but in an indexedDB context.
 
 # Usage
 ```js
-var db = Nanoidb('butts', 1)
+var db = Nanoidb('data-db', 1)
 db.on('upgrade', function (diffData) {
-  diffData.db.createObjectStore('butts')
+  diffData.db.createObjectStore('object')
 })
 
 db.on('open', function (stores) {
-  putOp(stores.butts)
+  putOp(stores.object)
 
   function putOp (store) {
-    stores.butts.put('butts', 'cute', function (err) {
+    stores.butts.put('key-12345', 'tabby cat', function (err) {
       if (err) throw err
       console.log('put done')
-      getOp(stores.butts)
+      getOp(stores.object)
+      getAllOp(stores.object)
+    })
+  }
+
+  function getAllOp (store) {
+    stores.getAll(function (err, values) {
+      if (err) throw err
+      values.forEach(function (value) {
+        console.log('new value', value)
+      }) 
     })
   }
 
   function getOp (store) {
-    store.get('butts', function (err, val) {
+    store.get('key-12345', function (err, val) {
       if (err) throw err
       console.log('get value', val)
       deleteOp(store)
@@ -37,7 +47,7 @@ db.on('open', function (stores) {
   }
 
   function deleteOp (store) {
-    store.del('butts', function (err) {
+    store.del('key-12345', function (err) {
       if (err) throw err
       console.log('deleted')
       batchOp(store)
@@ -85,6 +95,12 @@ callback.
 ### `store.get(key, callback(err, val))`
 You can also get a value from the database with a `get`. Takes a `key` and an
 error callback.
+
+### `store.getAll([query, count], callback(err, val))`
+Get all records in a given store. Can optionally take a [query
+key](https://developer.mozilla.org/en-US/docs/Web/API/IDBObjectStore/getAll) or
+range, as well as a count for values to be returned if there are duplicates.
+Will return all records if neither `query` nor `count` are provided.
 
 ### `store.del(key, callback(err))`
 Delete method takes a `key` and an error callback.
