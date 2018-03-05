@@ -73,6 +73,11 @@ db.on('open', function (stores) {
 This creates an instance of IndexedDB. It takes in a database `name` and
 `version`. IndexedDB's versioning starts with 1, rather than 0. 
 
+### `db.upgrade(version)`
+Upgrades the current version of Nanoidb with the specified version. This is
+useful for when you need to create an extra `object store` under the same
+Nanoidb instance.
+
 ### `db.on('upgrade', callback(diffData))`
 Returns an object composed of a previously created indexedDB and a
 IDBVersionChangeEvent. This is where you should create your object store by
@@ -83,6 +88,10 @@ schema updates.
 
 ### `db.on('open', callback(stores))`
 Returns an instance of an object store that you can later use.
+
+### `db.on('error', callback(error))`
+Returns an IndexedDB error object. This event will be sent when IndexedDB runs
+into an error creating a database.
 
 ### `store = stores.<name>`
 Instance of an Object Store. 
