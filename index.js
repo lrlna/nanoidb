@@ -11,36 +11,47 @@ function Nanoidb (name, version) {
   this._version = version
 
   assert.equal(typeof name, 'string', 'Nanoidb: name should be type string')
-  assert.equal(typeof version, 'number', 'Nanoidb: name should be type number')
+  assert.equal(typeof version, 'number', 'Nanoidb: version should be type number')
 
-  var self = this
-
-  var db = window.indexedDB.open(this._name, this._version)
-
-  db.onerror = function (event) {
-    self.emit('error', db.error)
-  }
-
-  db.onsuccess = function (event) {
-    var storeNames = event.target.result.objectStoreNames
-    var stores = Object.keys(storeNames).reduce(function (stores, key) {
-      var name = storeNames[key]
-      stores[name] = new Store(name, db.result)
-      return stores
-    }, {})
-
-    self.emit('open', stores)
-  }
-
-  db.onupgradeneeded = function (event) {
-    self.emit('upgrade', {
-      db: db.result,
-      event: event
-    })
-  }
+  this.upgrade(this._version)
 }
 
 Nanoidb.prototype = Object.create(Nanobus.prototype)
+
+Nanoidb.prototype.upgrade = function (version) {
+  assert.equal(typeof version, 'number', 'Nanoidb.upgrade: version should be type number')
+  this._version = version
+
+  this.db = window.indexedDB.open(this._name, this._version)
+
+  this.db.onerror = this.onerror.bind(this)
+  this.db.onsuccess = this.onsuccess.bind(this)
+  this.db.onupgradeneeded = this.onupgradeneeded.bind(this)
+}
+
+Nanoidb.prototype.onsuccess = function (event) {
+  var storeNames = event.target.result.objectStoreNames
+  var self = this
+
+  var stores = Object.keys(storeNames).reduce(function (stores, key) {
+    var name = storeNames[key]
+    stores[name] = new Store(name, self.db.result)
+    return stores
+  }, {})
+
+  this.emit('open', stores)
+}
+
+Nanoidb.prototype.onerror = function (event) {
+  this.emit('error', this.db.error)
+}
+
+Nanoidb.prototype.onupgradeneeded = function (event) {
+  this.emit('upgrade', {
+    db: this.db.result,
+    event: event
+  })
+}
 
 function Store (name, db) {
   this.name = name
