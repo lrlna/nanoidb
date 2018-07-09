@@ -22,20 +22,22 @@ Nanoidb.prototype.upgrade = function (version) {
   assert.equal(typeof version, 'number', 'Nanoidb.upgrade: version should be type number')
   this._version = version
 
-  this.db = window.indexedDB.open(this._name, this._version)
+  this.request = window.indexedDB.open(this._name, this._version)
 
-  this.db.onerror = this.onerror.bind(this)
-  this.db.onsuccess = this.onsuccess.bind(this)
-  this.db.onupgradeneeded = this.onupgradeneeded.bind(this)
+  this.request.onerror = this.onerror.bind(this)
+  this.request.onsuccess = this.onsuccess.bind(this)
+  this.request.onupgradeneeded = this.onupgradeneeded.bind(this)
 }
 
 Nanoidb.prototype.onsuccess = function (event) {
   var storeNames = event.target.result.objectStoreNames
+  this.db = event.target.result
+
   var self = this
 
   var stores = Object.keys(storeNames).reduce(function (stores, key) {
     var name = storeNames[key]
-    stores[name] = new Store(name, self.db.result)
+    stores[name] = new Store(name, self.db)
     return stores
   }, {})
 
@@ -43,12 +45,16 @@ Nanoidb.prototype.onsuccess = function (event) {
 }
 
 Nanoidb.prototype.onerror = function (event) {
+  this.db = event.target.result
+
   this.emit('error', this.db.error)
 }
 
 Nanoidb.prototype.onupgradeneeded = function (event) {
+  this.db = event.target.result
+
   this.emit('upgrade', {
-    db: this.db.result,
+    db: this.db,
     event: event
   })
 }

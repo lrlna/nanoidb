@@ -12,25 +12,26 @@ essentially a set of database tables, but in an indexedDB context.
 
 # Usage
 ```js
-var db = Nanoidb('data-db', 1)
+var db = Nanoidb('catStore', 1)
 db.on('upgrade', function (diffData) {
-  diffData.db.createObjectStore('object')
+  diffData.db.createObjectStore('catStore')
 })
 
 db.on('open', function (stores) {
-  putOp(stores.object)
+  putOp(stores.catStore)
 
   function putOp (store) {
-    stores.butts.put('key-12345', 'tabby cat', function (err) {
+    stores.catStore.put('key-12345', 'ChashuCat', function (err) {
       if (err) throw err
       console.log('put done')
-      getOp(stores.object)
-      getAllOp(stores.object)
+      batchOp(stores.catStore)
+      getOp(stores.catStore)
+      getAllOp(stores.catStore)
     })
   }
 
   function getAllOp (store) {
-    stores.getAll(function (err, values) {
+    store.getAll('dang', 10, function (err, values) {
       if (err) throw err
       values.forEach(function (value) {
         console.log('new value', value)
@@ -47,7 +48,7 @@ db.on('open', function (stores) {
   }
 
   function deleteOp (store) {
-    store.del('key-12345', function (err) {
+    store.del('catStore', function (err) {
       if (err) throw err
       console.log('deleted')
       batchOp(store)

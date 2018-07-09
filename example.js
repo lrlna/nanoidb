@@ -8,24 +8,35 @@ var app = choo()
 app.route('/', MainView)
 
 app.use(log())
-var db = Nanoidb('butts', 1)
+var db = Nanoidb('catStore', 1)
 db.on('upgrade', function (diffData) {
-  diffData.db.createObjectStore('butts')
+  diffData.db.createObjectStore('catStore')
 })
 
 db.on('open', function (stores) {
-  putOp(stores.butts)
+  putOp(stores.catStore)
 
   function putOp (store) {
-    stores.butts.put('butts', 'cute', function (err) {
+    stores.catStore.put('key-12345', 'ChashuCat', function (err) {
       if (err) throw err
       console.log('put done')
-      getOp(stores.butts)
+      batchOp(stores.catStore)
+      getOp(stores.catStore)
+      getAllOp(stores.catStore)
+    })
+  }
+
+  function getAllOp (store) {
+    store.getAll('dang', 10, function (err, values) {
+      if (err) throw err
+      values.forEach(function (value) {
+        console.log('new value', value)
+      }) 
     })
   }
 
   function getOp (store) {
-    store.get('butts', function (err, val) {
+    store.get('key-12345', function (err, val) {
       if (err) throw err
       console.log('get value', val)
       deleteOp(store)
@@ -33,7 +44,7 @@ db.on('open', function (stores) {
   }
 
   function deleteOp (store) {
-    store.del('butts', function (err) {
+    store.del('catStore', function (err) {
       if (err) throw err
       console.log('deleted')
       batchOp(store)
